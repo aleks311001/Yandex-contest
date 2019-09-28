@@ -1,0 +1,178 @@
+#include "iostream"
+#include "cstdio"
+
+struct Comanda
+    {
+    int effect;
+    int num;
+    };
+
+void mergeSort (Comanda *start, Comanda *finish, Comanda* buffer);
+void sliv (Comanda *arr1, Comanda *arr2, int sz1, int sz2, Comanda *buffer);
+void alg (int n, long long eff, int* num_min, int* num_max, long long* max_eff, Comanda* arr, long long* pref);
+void Print_arr (int n, int num_min, int num_max, long long max_eff, Comanda* arr, Comanda* buffer);
+void Scan_arr (Comanda* arr, int n);
+void Create_pref (Comanda* arr, int n, long long* pref);
+
+int main ()
+    {
+    int n = 0;
+    scanf ("%d", &n);
+
+    Comanda* arr = new Comanda [n];
+    Scan_arr (arr, n);
+
+    Comanda* buffer = new Comanda [n];
+    mergeSort (arr, arr + n, buffer);
+
+    long long* pref = new long long [n];
+    Create_pref (arr, n, pref);
+
+    long long eff     = 0;
+    long long max_eff = 0;
+    int num_min       = 0;
+    int num_max       = 0;
+
+    alg (n, eff, &num_min, &num_max, &max_eff, arr, pref);
+
+    Print_arr (n, num_min, num_max, max_eff, arr, buffer);
+
+    delete []buffer;
+    delete []arr;
+
+    return 0;
+    }
+
+void Create_pref (Comanda* arr, int n, long long* pref)
+    {
+    pref[0] = (long long)arr[0].effect;
+    for (int i = 1; i < n; i++)
+        pref[i] = pref[i - 1] + (long long)arr[i].effect;
+    }
+
+void Scan_arr (Comanda* arr, int n)
+    {
+    for (int i = 0; i < n; i++)
+        {
+        scanf ("%d", &arr[i].effect);
+        arr[i].num = i + 1;
+        }
+    }
+
+void Print_arr (int n, int num_min, int num_max, long long max_eff, Comanda* arr, Comanda* buffer)
+    {
+    if (n > 1)
+        {
+        printf ("%lld\n", max_eff);
+
+        for (int i = num_min; i < num_max; i++)
+            arr[i].effect = arr[i].num;
+
+        mergeSort (arr + num_min, arr + num_max, buffer);
+
+        for (int i = num_min; i < num_max; i++)
+            printf ("%d ", arr[i].effect);
+        }
+    else
+        printf ("%d\n1", arr[0].effect);
+    }
+
+void alg (int n, long long eff, int* num_min, int* num_max, long long* max_eff, Comanda* arr, long long* pref)
+    {
+    for (int i = 0, j = 0, k = n; i < n - 1; i++)
+        {
+        if (i > 0) eff = pref[i + 1] - pref[i - 1];
+        else       eff = pref[i + 1];
+
+        for (j = i + 2, k = n;;)
+            {
+            if (k - j <= 1)
+                {
+                if (eff < (long long)arr[j].effect) j--;
+                     /*if (i > 0 && j <  n) eff = pref[j]     - pref[i - 1];
+                else if (i > 0 && j >= n) eff = pref[n - 1] - pref[i - 1];
+                else if (i < 1 && j <  n) eff = pref[j];
+                else                      eff = pref[n - 1];*/
+                eff = pref[std::min(j, n - 1)] - i?pref[i-1]:0;
+                break;
+                }
+            else
+                {
+                if (eff >= (long long)arr[(j + k)/2].effect) j = (j + k)/2 + 1;
+                else k = (j + k)/2 - 1;
+                }
+            }
+
+        if (*max_eff < eff)
+            {
+            *max_eff = eff;
+            *num_min = i;
+            if (j < n) *num_max = j + 1;
+            else       *num_max = n;
+            }
+        }
+    }
+
+void mergeSort (Comanda* start, Comanda* finish, Comanda* buffer)
+    {
+    if ((int)(finish - start) > 1)
+        {
+        mergeSort (start, start + ((int)(finish - start) + 1)/2,         buffer);
+        mergeSort (       start + ((int)(finish - start) + 1)/2, finish, buffer);
+        sliv (start, start + ((int)(finish - start) + 1)/2,
+                             ((int)(finish - start) + 1)/2,
+                             ((int)(finish - start))/2, buffer);
+        }
+    }
+
+void sliv (Comanda* arr1, Comanda* arr2, int sz1, int sz2, Comanda* buffer)
+    {
+    int i = 0;
+    int j = 0;
+
+    for (;i + j < sz1 + sz2;)
+        {
+        if (i >= sz1)
+            {
+            for (;j < sz2; j++)
+                {
+                buffer [i + j].effect = arr2[j].effect;
+                buffer [i + j].num    = arr2[j].num;
+                }
+            break;
+            }
+        if (j >= sz2)
+            {
+            for (;i < sz1; i++)
+                {
+                buffer [i + j].effect = arr1[i].effect;
+                buffer [i + j].num    = arr1[i].num;
+                }
+            break;
+            }
+
+        if (arr1[i].effect > arr2[j].effect)
+            {
+            buffer [i + j].effect = arr2[j].effect;
+            buffer [i + j].num    = arr2[j].num;
+            j++;
+            }
+        else
+            {
+            buffer [i + j].effect = arr1[i].effect;
+            buffer [i + j].num    = arr1[i].num;
+            i++;
+            }
+        }
+
+    for (int k = 0; k < sz1; k++)
+        {
+        arr1[k].effect = buffer[k].effect;
+        arr1[k].num    = buffer[k].num;
+        }
+    for (int k = 0; k < sz2; k++)
+        {
+        arr2[k].effect = buffer[k + sz1].effect;
+        arr2[k].num    = buffer[k + sz1].num;
+        }
+    }
