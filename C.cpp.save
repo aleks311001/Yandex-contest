@@ -1,0 +1,12 @@
+#include "cstdio"
+#include "iostream"
+
+int main ()
+    {
+    int n = 11111111;
+
+    FILE* f = std::fopen ("test.txt", "w");
+
+    for (double i = 0; i < n; i++)
+        fprintf (f, "%lg ", i * 243 + 324);
+    }

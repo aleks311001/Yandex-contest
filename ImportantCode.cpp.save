@@ -1,0 +1,12 @@
+#include "cstdio"
+
+int main ()
+    {
+    int size_ = 0;
+    
+    scanf ("%d ", size_);
+    
+    int* start = new int (size_);
+    
+    return 0;
+    }

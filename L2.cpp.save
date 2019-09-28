@@ -1,0 +1,296 @@
+#include <iostream>
+#include <stdio.h>
+#include <assert.h>
+#include <stdlib.h>
+
+struct otr
+    {
+    int p;
+    int flag_l;
+    int num;
+    };
+
+void Scan_otr (otr *otr_arr, int n);
+void mergeSort (otr *start, otr *finish, otr *buffer, int *i, int *j, int *k);
+void sliv (otr* arr1, otr* arr2, int sz1, int sz2, otr* buffer, int *i, int *j, int *k);
+void Print_arr (otr* arr, int sz);
+
+int main ()
+    {
+    /*int n = 0;
+    int m = 0;
+    scanf ("%d %d", &n, &m);
+
+    otr *otr_arr = new otr[2*n];
+    Scan_otr (otr_arr, n);
+
+    otr *point = new otr[m];
+    for (int i = 0; i < m; i++)
+        {
+        scanf ("%d", &point[i].p);
+        point[i].flag_l = 0;
+        point[i].num = i;
+        }    */
+
+    int n = rand();
+    int m = 1000;
+    printf ("%d %d\n", n, m);
+
+    otr *otr_arr = new otr[2*n];
+    Scan_otr (otr_arr, n);
+
+    Print_arr (otr_arr, 2*n);
+
+    otr *point = new otr[m];
+    for (int i = 0; i < m; i++)
+        {
+        //scanf ("%d", &point[i].p);
+        point[i].p = rand();
+        printf ("%d ", point[i].p);
+        point[i].flag_l = 0;
+        point[i].num = i;
+        }
+
+    //printf ("\n\n\n\n\n\n\n");
+
+    int sz = 0;
+    if (n > m) sz = 2*n;
+    else sz = 2*m;
+    otr *buffer = new otr[sz];
+
+    //printf ("!!!\n\n\n\n");
+    int a = 0;
+    int b = 0;
+    int c = 0;
+    mergeSort (otr_arr, otr_arr + 2*n, buffer, &a, &b, &c);
+    //printf ("!!!\n\n\n\n");
+    mergeSort (point  , point   +   m, buffer, &a, &b, &c);
+    //printf ("!!!\n\n\n\n");
+
+    int j = 0;
+    int summ = 0;
+    int summ2 = 0;
+    int i0 = 0;
+    for (; point[j].p < otr_arr[0].p && j < m; j++)
+            {
+            assert (j < m);
+            point[j].flag_l = summ;
+            //printf ("s = %d, p[%d] = %d, o[%d] = %d, n = %d, num = %d\n", summ, j, point[j].p, i, otr_arr[i].p, point[j].flag_l, point[j].num);
+            }
+
+    for (int i = 0; i < 2*n && j < m; i++)
+        {
+        //printf ("!!! ");
+        summ2 = summ;
+        //printf ("i: %d | s = %d, s2 = %d || ", i, summ, summ2);
+        i0 = i;
+        assert (i < 2*n);
+        if (otr_arr[i].flag_l > 0)
+            summ += otr_arr[i].flag_l;
+
+        assert (i < 2*n);
+        for (; i < 2*n - 1 && otr_arr[i].p == otr_arr[i + 1].p; i++)
+            {
+            assert (i + 1 < 2*n);
+            if (otr_arr[i + 1].flag_l > 0)
+                summ += otr_arr[i + 1].flag_l;
+            }
+        //printf ("s = %d, flag_l = %d || ", summ, otr_arr[i].flag_l);
+        /*for (; point[j].p <= otr_arr[i].p && j < m; j++)
+            {
+            if (point[j].p == otr_arr[i].p) point[j].flag_l = summ;
+            else point[j].flag_l = summ2;
+            //printf ("s = %d, p[%d] = %d, o[%d] = %d, n = %d, num = %d\n", summ, j, point[j].p, i, otr_arr[i].p, point[j].flag_l, point[j].num);
+            }*/
+        if (i < 2*n)
+            {
+            assert (i < 2*n);
+            assert (j < m);
+            for (; point[j].p <= otr_arr[i].p && j < m; j++)
+                {
+                assert (j < m);
+                assert (i < 2*n);
+                if (point[j].p == otr_arr[i].p) point[j].flag_l = summ;
+                else point[j].flag_l = summ2;
+                //printf ("s = %d, p[%d] = %d, o[%d] = %d, n = %d, num = %d\n", summ, j, point[j].p, i, otr_arr[i].p, point[j].flag_l, point[j].num);
+                }
+            }
+
+        if (i == 2*n - 1 && j < m)
+            for (; point[j].p == otr_arr[i].p && j < m; j++)
+                {
+                assert (j < m);
+                assert (i < 2*n);
+                point[j].flag_l = summ;
+                }
+
+        i = i0;
+        assert (i < 2*n);
+        if (otr_arr[i].flag_l < 0)
+            {
+            assert (i < 2*n);
+            summ += otr_arr[i].flag_l;
+            }
+
+        for (; i < 2*n - 1 && otr_arr[i].p == otr_arr[i + 1].p; i++)
+            {
+            assert (i + 1 < 2*n);
+            if (otr_arr[i + 1].flag_l < 0)
+                summ += otr_arr[i + 1].flag_l;
+            }
+
+        //for (; i < 2*n - 1 && otr_arr[i].p == otr_arr[i + 1].p; i++) summ += otr_arr[i + 1].flag_l;
+        }
+
+    for (int i = 0; i < m; i++)
+        {
+        assert (i < m);
+        //printf ("%d (%d) : %d ||\n", point[i].num, point[i].p, point[i].flag_l);
+        point[i].p = point[i].num;
+        }
+
+    mergeSort (point, point + m, buffer, &a, &b, &c);
+
+    for (int i = 0; i < m; i++)
+        {
+        assert (i < m);
+        printf ("%d ", point[i].flag_l);
+        }
+
+    delete []point;
+    delete []otr_arr;
+    delete []buffer;
+
+    return 0;
+    }
+
+void Scan_otr (otr *otr_arr, int n)
+    {
+    int t1 = 0;
+    int t2 = 0;
+    for (int i = 0; i < n; i++)
+        {
+        //scanf ("%d %d", &t1, &t2);
+        t1 = rand();
+        t2 = rand();
+        printf ("%d %d\n", t1, t2);
+        otr_arr[2*i    ].p = t1;
+        otr_arr[2*i + 1].p = t2;
+        if (t1 < t2)
+            {
+            otr_arr[2*i  ].flag_l =  1;
+            otr_arr[2*i+1].flag_l = -1;
+            }
+        else
+            {
+            otr_arr[2*i  ].flag_l = -1;
+            otr_arr[2*i+1].flag_l =  1;
+            }
+        }
+    }
+
+void mergeSort (otr* start, otr* finish, otr* buffer, int *i, int *j, int *k)
+    {
+    if ((int)(finish - start) > 1)
+        {
+        //printf ("lenth1 = %d\n",(int)(finish - start));
+        mergeSort (start, start + ((int)(finish - start) + 1)/2,         buffer, i, j, k);
+        //printf ("lenth2 = %d\n",(int)(finish - start));
+        mergeSort (       start + ((int)(finish - start) + 1)/2, finish, buffer, i, j, k);
+        //printf ("lenth3 = %d\n",(int)(finish - start));
+        sliv (start, start + ((int)(finish - start) + 1)/2, ((int)(finish - start) + 1)/2, ((int)(finish - start))/2, buffer, i, j, k);
+        //printf ("lenth4 = %d\n",(int)(finish - start));
+        }
+    }
+
+void Print_arr (otr* arr, int sz)
+    {
+    for (int i = 0; i < sz; i++)
+        {
+        printf ("arr[%d] = %d | ", i, arr[i].p);
+        }
+    printf ("\n");
+    }
+
+void sliv (otr* arr1, otr* arr2, int sz1, int sz2, otr* buffer, int* i, int* j, int* k)
+    {
+    (*i) = 0;
+    (*j) = 0;
+    (*k) = 0;
+    //printf ("|1| (%d, %d)\n", sz1, sz2);
+    //Print_arr (arr1, sz1);
+    //Print_arr (arr2, sz2);
+
+    for (;(*i) + (*j) < sz1 + sz2;)
+        {
+        //printf ("start: %d, %d\n", (*i), (*j));
+        if ((*i) >= sz1)
+            {
+            for (;(*j) < sz2; (*j)++)
+                {
+                //printf ("123 ");
+                buffer [(*i) + (*j)].p      = arr2[(*j)].p;
+                buffer [(*i) + (*j)].flag_l = arr2[(*j)].flag_l;
+                buffer [(*i) + (*j)].num    = arr2[(*j)].num;
+                }
+            //printf ("break1\n");
+            break;
+            }
+        if ((*j) >= sz2)
+            {
+            //printf ("1234 ");
+            for (;(*i) < sz1; (*i)++)
+                {
+                //printf ("1234 ");
+                buffer [(*i) + (*j)].p      = arr1[(*i)].p;
+                buffer [(*i) + (*j)].flag_l = arr1[(*i)].flag_l;
+                buffer [(*i) + (*j)].num    = arr1[(*i)].num;
+                }
+            //printf ("break2\n");
+            break;
+            }
+
+        if (arr1[(*i)].p > arr2[(*j)].p)
+            {
+            //printf ("12345 ");
+            buffer [(*i) + (*j)].p      = arr2[(*j)].p;
+            buffer [(*i) + (*j)].flag_l = arr2[(*j)].flag_l;
+            buffer [(*i) + (*j)].num    = arr2[(*j)].num;
+            (*j)++;
+            }
+        else
+            {
+            //printf ("1234561 ");
+            buffer [(*i) + (*j)].p      = arr1[(*i)].p;
+            //printf ("1234562, %d, %d\n", 5, arr1[(*i)].flag_l);
+            buffer [(*i) + (*j)].flag_l = arr1[(*i)].flag_l;
+            //printf ("1234563 ");
+            buffer [(*i) + (*j)].num    = arr1[(*i)].num;
+            //printf ("1234564 ");
+            (*i)++;
+            }
+        //printf ("finish: %d, %d\n", (*i), (*j));
+        }
+   // printf ("|2|\n");
+    //Print_arr (arr1, sz1);
+    //Print_arr (arr2, sz2);
+    //Print_arr (buffer, sz1 + sz2);
+
+    for ((*k) = 0; (*k) < sz1; (*k)++)
+        {
+        arr1[(*k)].p      = buffer[(*k)].p;
+        arr1[(*k)].flag_l = buffer[(*k)].flag_l;
+        arr1[(*k)].num    = buffer[(*k)].num;
+        }
+    for ((*k) = 0; (*k) < sz2; (*k)++)
+        {
+        arr2[(*k)].p      = buffer[(*k) + sz1].p;
+        arr2[(*k)].flag_l = buffer[(*k) + sz1].flag_l;
+        arr2[(*k)].num = buffer[(*k) + sz1].num;
+        }
+
+    //printf ("|3|\n");
+    //Print_arr (arr1, sz1);
+    //Print_arr (arr2, sz2);
+    //Print_arr (buffer, sz1 + sz2);
+    }
