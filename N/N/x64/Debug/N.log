@@ -1,0 +1,7 @@
+﻿  N.cpp
+C:\Users\Александр\Documents\GitHub\Yandex-contest\N\N\N.cpp(16,1): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\stdio.h(1274): message : см. объявление "scanf"
+C:\Users\Александр\Documents\GitHub\Yandex-contest\N\N\N.cpp(104,1): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\stdio.h(1274): message : см. объявление "scanf"
+  AssemblyInfo.obj : обнаружен модуль MSIL; для MSIL последовательная компоновка отключена; выполняется полная компоновка
+  N.vcxproj -> C:\Users\Александр\Documents\GitHub\Yandex-contest\N\x64\Debug\N.exe
