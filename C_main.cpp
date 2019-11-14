@@ -7,21 +7,31 @@ double TimeReadF (int n, void (*f)(double&));
 void F_cin (double& t);
 void F_scanf (double& t);
 
-int main ()
+int main (int argc, char* argv[])
     {
-    /*FILE* f = std::fopen ("test.txt", "w");
-    WriteFileDouble (f, 22222222);
-    fclose (f); */
-
-    freopen ("test.txt", "r", stdin);
-
-    for (int n = 10000; n < 100000000; n *= 10)
+    if (argc == 1) printf ("Please, choose function");
+    else
         {
-        printf ("std::cin (n = %d): %lg | ", n, TimeReadF (n, F_cin  ));
-        printf ("scanf (n = %d): %lg \n",    n, TimeReadF (n, F_scanf));
-        }
+        if (argv[1][0] == 'w')
+            {
+            FILE* f = std::fopen ("test.txt", "w");
+            WriteFileDouble (f, 22222222);
+            fclose (f);
+            }
+        else
+            {
+            freopen ("test.txt", "r", stdin);
 
-    fclose (stdin);
+            if (argv[1][0] == 'c')
+                for (int n = 10000; n < 100000000; n *= 10)
+                    printf ("std::cin (n = %d): %lg\n", n, TimeReadF (n, F_cin  ));
+            if (argv[1][0] == 's')
+                for (int n = 10000; n < 100000000; n *= 10)
+                    printf ("scanf (n = %d): %lg\n",    n, TimeReadF (n, F_scanf));
+
+            fclose (stdin);
+            }
+        }
     }
 
 void WriteFileDouble (FILE* f, int n)
